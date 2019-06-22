@@ -1,4 +1,5 @@
 # Python Class that will take orbital elements
+import numpy as np
 
 class Orbit:
     # Class constructor
@@ -53,3 +54,18 @@ class Orbit:
     @aop.setter
     def aop(self,val):
         self._aop = val
+
+    # Calculate semi-latus rectum
+    @property
+    def semiLatusRectum(self):
+        self._semiLatusRectum = self._semiMajorAxis * (1 - self._eccentricity**2)
+        return self._semiLatusRectum
+
+    # Calculate radial coordinates of spacecraft in orbit
+    @property
+    def r(self):
+        P = self.semiLatusRectum
+        self._r = np.zeros((360,))
+        for theta_star in range(360):
+            self._r[theta_star] = P/(1 + self._eccentricity * np.cos(np.radians(theta_star)))
+        return self._r
