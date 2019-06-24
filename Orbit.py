@@ -1,5 +1,27 @@
 # Python Class that will take orbital elements
+# Author: Sandeep Baskar
+
+#!/usr/bin/env python
+
 import numpy as np
+
+
+# Helper functions
+def c(arg):
+    return np.cos(np.radians(arg))
+
+def s(arg):
+    return np.sin(np.radians(arg))
+
+# Function to do matrix multiplication of 3x3 with 3x1
+def matmul(a,b):
+    [C11, C12, C13] = a[0][:]
+    [C21, C22, C23] = a[1][:]
+    [C31, C32, C33] = a[2][:]
+    R1              = C11 * b[0] + C12 * b[1] + C13 * b[2]
+    R2              = C21 * b[0] + C22 * b[1] + C23 * b[2]
+    R3              = C31 * b[0] + C32 * b[1] + C33 * b[2]
+    return [R1, R2, R3]
 
 class Orbit:
     # Class constructor
@@ -66,6 +88,61 @@ class Orbit:
     def r(self):
         P = self.semiLatusRectum
         self._r = np.zeros((360,))
-        for theta_star in range(360):
-            self._r[theta_star] = P/(1 + self._eccentricity * np.cos(np.radians(theta_star)))
+        for thetaStar in range(360):
+            self._r[thetaStar] = P/(1 + self._eccentricity * np.cos(np.radians(thetaStar)))
         return self._r
+
+    # Calculate directional cosine matrix at a particular true anomaly relating
+    # orbital and inertial frames
+    def _dcm(self, thetaStar):
+        theta = thetaStar + self._aop
+        inc   = self._inclination
+        omega = self._raan
+        C11   = c(omega) * c(theta) - s(omega) * c(inc) * s(theta)
+        C12   = -c(omega) * s(theta) - s(omega) * c(inc) * c(theta)
+        C13   = s(omega) * s(inc)
+        C21   = s(omega) * c(theta) + c(omega) * c(inc) * s(theta)
+        C22   = -s(omega) * s(theta) + c(omega) * c(inc) * c(theta)
+        C23   = -c(omega) * s(inc)
+        C31   = s(inc) * s(theta)
+        C32   = s(inc) * c(theta)
+        C33   = c(inc)
+        C     = [[C11, C12, C13],[C21, C22, C23],[C31, C32, C33]]
+        return C
+
+    # Calculate inertial (J2000) coordinates at every true anomaly position
+    def _inertial_vec(self):
+        _r_inertial = self.r
+        self._rVectorInertial = np.zeros((360,3))
+
+        # Iterate through true anomaly to find (x,y,z) coordinates
+        for _thetaStar in range(0,360):
+            # Find coordinates in orbit fixed reference frame
+            _theta           = _thetaStar + self.aop
+            _rVectorOrbital  = [_r_inertial[_thetaStar], _theta, 0]
+
+            # Calculate DCM at each true anomaly
+            _DCM             = self._dcm(_thetaStar)
+
+            # Calculate inertial coordinates
+            self._rVectorInertial[_thetaStar][:] = matmul(_DCM, _rVectorOrbital)
+
+        return self._rVectorInertial
+
+    # Get inertial x values
+    @property
+    def x(self):
+        _rVectorInertial = self._inertial_vec()
+        return _rVectorInertial[:,0]
+
+    # Get inertial y values
+    @property
+    def y(self):
+        _rVectorInertial = self._inertial_vec()
+        return _rVectorInertial[:,1]
+
+    # Get inertial z values
+    @property
+    def z(self):
+        _rVectorInertial = self._inertial_vec()
+        return _rVectorInertial[:,2]
