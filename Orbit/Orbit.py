@@ -4,7 +4,8 @@
 #!/usr/bin/env python
 
 import numpy as np
-
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 # Helper functions
 def c(arg):
@@ -102,3 +103,37 @@ class Orbit:
     def z(self):
         _rVectorInertial = self._inertial_vec()
         return _rVectorInertial[:,2]
+
+    # Static method to setup plot
+    def plot(self):
+        x = self.x
+        y = self.y
+        z = self.z
+
+        # Initializing 3D plot
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection = '3d')
+
+        # Plot orbit
+        ax.plot(x, y, z)
+
+        # Initializing Earth
+        r_earth = 6378
+        u = np.linspace(0, np.pi, 30)
+        v = np.linspace(0, 2 * np.pi, 30)
+
+        x_e = np.outer(np.sin(u), np.sin(v)) * r_earth
+        y_e = np.outer(np.sin(u), np.cos(v)) * r_earth
+        z_e = np.outer(np.cos(u), np.ones_like(v)) * r_earth
+
+        # Plot earth
+        ax.plot_wireframe(x_e, y_e, z_e)
+
+        plt.show()
+        return fig
+
+
+
+if __name__ == '__main__':
+    a = Orbit(0.6, 15000 + 6378, 30, 0, 0)
+    a.plot()
