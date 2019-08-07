@@ -18,64 +18,20 @@ def matmul(a,b):
     [C11, C12, C13] = a[0][:]
     [C21, C22, C23] = a[1][:]
     [C31, C32, C33] = a[2][:]
-    R1              = C11 * b[0] + C12 * b[1] + C13 * b[2]
-    R2              = C21 * b[0] + C22 * b[1] + C23 * b[2]
-    R3              = C31 * b[0] + C32 * b[1] + C33 * b[2]
+    R1 = C11 * b[0] + C12 * b[1] + C13 * b[2]
+    R2 = C21 * b[0] + C22 * b[1] + C23 * b[2]
+    R3 = C31 * b[0] + C32 * b[1] + C33 * b[2]
     return [R1, R2, R3]
 
 class Orbit:
     # Class constructor
     def __init__(self, eccentricity, semiMajorAxis, inclination, raan, aop):
-        self._eccentricity  = eccentricity
+        self._eccentricity = eccentricity
         self._semiMajorAxis = semiMajorAxis
-        self._inclination   = inclination
-        self._raan          = raan
-        self._aop           = aop
+        self._inclination = inclination
+        self._raan = raan
+        self._aop = aop
 
-    # Eccentricity getter and setter
-    @property
-    def eccentricity(self):
-        return self._eccentricity
-
-    @eccentricity.setter
-    def eccentricity(self, val):
-        self._eccentricity = val
-
-    # Semimajor axis getter and setter
-    @property
-    def semiMajorAxis(self):
-        return self._getsemiMajorAxis
-
-    @semiMajorAxis.setter
-    def semiMajorAxis(self, val):
-        self_semiMajorAxis = val
-
-    # Inclination getter and setter
-    @property
-    def inclination(self):
-        return self._inclination
-
-    @inclination.setter
-    def inclination(self,val):
-        self._inclination = val
-
-    # RAAN getter and setter
-    @property
-    def raan(self):
-        return self._raan
-
-    @raan.setter
-    def raan(self,val):
-        self._raan = val
-
-    # AOP getter and setter
-    @property
-    def aop(self):
-        return self._aop
-
-    @aop.setter
-    def aop(self,val):
-        self._aop = val
 
     # Calculate semi-latus rectum
     @property
@@ -96,18 +52,18 @@ class Orbit:
     # orbital and inertial frames
     def _dcm(self, thetaStar):
         theta = thetaStar + self._aop
-        inc   = self._inclination
+        inc = self._inclination
         omega = self._raan
-        C11   = c(omega) * c(theta) - s(omega) * c(inc) * s(theta)
-        C12   = -c(omega) * s(theta) - s(omega) * c(inc) * c(theta)
-        C13   = s(omega) * s(inc)
-        C21   = s(omega) * c(theta) + c(omega) * c(inc) * s(theta)
-        C22   = -s(omega) * s(theta) + c(omega) * c(inc) * c(theta)
-        C23   = -c(omega) * s(inc)
-        C31   = s(inc) * s(theta)
-        C32   = s(inc) * c(theta)
-        C33   = c(inc)
-        C     = [[C11, C12, C13],[C21, C22, C23],[C31, C32, C33]]
+        C11 = c(omega) * c(theta) - s(omega) * c(inc) * s(theta)
+        C12 = -c(omega) * s(theta) - s(omega) * c(inc) * c(theta)
+        C13 = s(omega) * s(inc)
+        C21 = s(omega) * c(theta) + c(omega) * c(inc) * s(theta)
+        C22 = -s(omega) * s(theta) + c(omega) * c(inc) * c(theta)
+        C23 = -c(omega) * s(inc)
+        C31 = s(inc) * s(theta)
+        C32 = s(inc) * c(theta)
+        C33 = c(inc)
+        C = [[C11, C12, C13],[C21, C22, C23],[C31, C32, C33]]
         return C
 
     # Calculate inertial (J2000) coordinates at every true anomaly position
@@ -118,11 +74,11 @@ class Orbit:
         # Iterate through true anomaly to find (x,y,z) coordinates
         for _thetaStar in range(0,360):
             # Find coordinates in orbit fixed reference frame
-            _theta           = _thetaStar + self.aop
-            _rVectorOrbital  = [_r_inertial[_thetaStar], _theta, 0]
+            _theta = _thetaStar + self._aop
+            _rVectorOrbital = [_r_inertial[_thetaStar], _theta, 0]
 
             # Calculate DCM at each true anomaly
-            _DCM             = self._dcm(_thetaStar)
+            _DCM = self._dcm(_thetaStar)
 
             # Calculate inertial coordinates
             self._rVectorInertial[_thetaStar][:] = matmul(_DCM, _rVectorOrbital)
