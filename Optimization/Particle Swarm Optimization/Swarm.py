@@ -10,8 +10,8 @@ class Swarm:
     def __init__(self, number_of_particles = 100):
         self._number_of_particles = number_of_particles
         self._particles = []
-        self._best_X = float('inf')
-        self._best_V = float('inf')
+        self._best_X = None
+        self._best_O = float('inf')
 
     @property
     def particles(self):
@@ -33,9 +33,9 @@ class Swarm:
         self._best_X = val
 
     @property
-    def best_V(self):
-        return self._best_V
+    def best_O(self):
+        return self._best_O
 
-    @best_V.setter
-    def best_V(self,val):
-        self._best_V = val
+    @best_O.setter
+    def best_O(self,val):
+        self._best_O = val

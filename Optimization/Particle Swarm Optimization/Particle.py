@@ -6,10 +6,10 @@
 class Particle:
     def __init__(self, id, current_X, current_V):
         self._id = id
-        self._X = current_X
-        self._V = current_V
+        self.X = current_X
+        self.V = current_V
         self._best_X = None
-        self._best_V = None
+        self._best_O = float('inf')
 
     @property
     def best_X(self):
@@ -20,9 +20,9 @@ class Particle:
         self._best_X = val
 
     @property
-    def best_V(self):
-        return self._best_V
+    def best_O(self):
+        return self._best_O
 
-    @best_V.setter
-    def best_V(self, val):
-        self._best_V = val
+    @best_O.setter
+    def best_O(self, val):
+        self._best_O = val
