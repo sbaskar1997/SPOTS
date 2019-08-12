@@ -131,9 +131,3 @@ class Orbit:
 
         plt.show()
         return fig
-
-
-
-if __name__ == '__main__':
-    a = Orbit(0.6, 15000 + 6378, 30, 0, 0)
-    a.plot()
