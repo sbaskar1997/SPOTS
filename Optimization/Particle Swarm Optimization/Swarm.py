@@ -3,24 +3,32 @@
 # Python class that will generate a swarm of particles, given number of particles
 # Author: Sandeep Baskar
 
-# Import required modules
+# Import native modules
+import numpy as np
+
+# Import custom modules
 from Particle import Particle
 
 class Swarm:
     def __init__(self, number_of_particles = 100):
         self._number_of_particles = number_of_particles
-        self._particles = []
         self._best_X = None
         self._best_O = float('inf')
+
+        # Populate particles
+        self._particles = np.array([])
+        for i in range(0,self._number_of_particles):
+            random_v_val = 0
+            random_x_val = 0
+            current_particle = Particle(id = i, current_X = random_x_val,
+                                   current_V = random_v_val)
+            self._particles = np.append(self._particles, current_particle)
+
 
     @property
     def particles(self):
         # Generate particles
-        for i in range(0,self._number_of_particles):
-            random_v_val = 0
-            random_x_val = 0
-            self._particles.append(Particle(id = i, current_X = random_x_val,
-                                   current_V = random_v_val))
+
 
         return self._particles
 
