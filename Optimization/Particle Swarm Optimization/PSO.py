@@ -22,7 +22,20 @@ from Swarm import Swarm
 
 def objective_function(X):
     # TODO: Make your own objective function here
-    o = sum((X)**2)
+    # Define constraints if any
+    constraint_1 = 1;
+    constraint_2 = 1;
+    constraint_3 = 1;
+
+    if (constraint_1 is 1) and (constraint_2 is 1) and (constraint_3 is 1):
+        o = sum((X)**2)
+    else:
+        o = sum((X)**2) + penalty_objective()
+
+    def penalty_objective():
+        # Add penalty function for violating constraints if desired
+        return 200
+
     return o
 
 swarm = Swarm(number_of_particles = 100)

@@ -27,9 +27,6 @@ class Swarm:
 
     @property
     def particles(self):
-        # Generate particles
-
-
         return self._particles
 
     @property
