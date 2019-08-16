@@ -1,8 +1,8 @@
-# Python Class that will take orbital elements
+#!/usr/bin/env python
+# Python Class that will take orbital elements and provide orbital information
 # Author: Sandeep Baskar
 
-#!/usr/bin/env python
-
+# Import required modules
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
