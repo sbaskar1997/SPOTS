@@ -10,6 +10,7 @@ import sys
 import os
 import random
 import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
 
 # Append appropriate directories
 sys.path.append(os.path.join('../../common/math'))
@@ -17,26 +18,36 @@ sys.path.append(os.path.join('../../common/math'))
 # Import custom modules
 from vectormath import *
 from Swarm import Swarm
+from ObjectiveFunction import objective_function
 
 # Initialization of problem
 
-def objective_function(X):
-    # TODO: Make your own objective function here
-    # Define constraints if any
-    constraint_1 = 1;
-    constraint_2 = 1;
-    constraint_3 = 1;
 
-    if (constraint_1 is 1) and (constraint_2 is 1) and (constraint_3 is 1):
-        o = sum((X)**2)
-    else:
-        o = sum((X)**2) + penalty_objective()
+def draw_landscape(upper_bounds, lower_bounds):
+    if (len(upper_bounds) > 2):
+        print('Warning: More than two dimensions given for landscape,' +
+        'only plotting first two variables in search landscape')
+    upper_bound_x1 = upper_bounds[0]
+    upper_bound_x2 = upper_bounds[1]
 
-    def penalty_objective():
-        # Add penalty function for violating constraints if desired
-        return 200
+    lower_bound_x1 = lower_bounds[0]
+    lower_bound_x2 = lower_bounds[1]
 
-    return o
+
+    x1 = np.linspace(lower_bound_x1, upper_bound_x1, 200)
+    x2 = np.linspace(lower_bound_x2, upper_bound_x2, 200)
+    xx, yy = np.meshgrid(x1, x2)
+
+    z = np.zeros(shape = (len(x1), len(x2)))
+
+    for x in range(0,len(x1)):
+        for y in range(0,len(x2)):
+            z[x,y] = objective_function(np.array([x1[x], x2[y]]))
+
+    fig = plt.figure()
+    ax = plt.axes(projection = '3d')
+    ax.plot_surface(xx, yy, z)
+    plt.show()
 
 swarm = Swarm(number_of_particles = 100)
 n_iterations = 500
@@ -121,3 +132,5 @@ for it in range(0,n_iterations):
 it_vec = np.linspace(1,n_iterations + 1, n_iterations)
 plt.plot(it_vec, GBEST)
 plt.show()
+
+draw_landscape(upper_bounds, lower_bounds)
