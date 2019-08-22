@@ -20,10 +20,8 @@ from vectormath import *
 from Swarm import Swarm
 from ObjectiveFunction import objective_function
 
-# Initialization of problem
-
-
-def draw_landscape(upper_bounds, lower_bounds):
+# Draw 3D landscape
+def draw_landscape(landscape_function, upper_bounds, lower_bounds):
     if (len(upper_bounds) > 2):
         print('Warning: More than two dimensions given for landscape,' +
         'only plotting first two variables in search landscape')
@@ -42,13 +40,46 @@ def draw_landscape(upper_bounds, lower_bounds):
 
     for x in range(0,len(x1)):
         for y in range(0,len(x2)):
-            z[x,y] = objective_function(np.array([x1[x], x2[y]]))
+            z[x,y] = landscape_function(np.array([x1[x], x2[y]]))
 
     fig = plt.figure()
     ax = plt.axes(projection = '3d')
     ax.plot_surface(xx, yy, z)
     plt.show()
 
+# Draw particle trajectories along 2D plot
+def draw_particles(landscape_function, upper_bounds, lower_bounds, swarm):
+
+    # Plot 2D contour
+    if (len(upper_bounds) > 2):
+        print('Warning: More than two dimensions given for landscape,' +
+        'only plotting first two variables in search landscape')
+
+    lower_x = lower_bounds[0]
+    lower_y = lower_bounds[1]
+
+    upper_x = upper_bounds[0]
+    upper_y = upper_bounds[1]
+
+    x = np.linspace(lower_x, upper_x, 200)
+    y = np.linspace(lower_y, upper_y, 200)
+    z = np.zeros(shape = (len(x), len(y)))
+
+    xx, yy = np.meshgrid(x,y)
+
+    for x_v in range(0, len(x)):
+        for y_v in range(0, len(y)):
+            z[x_v, y_v] = landscape_function(np.array([x[x_v], y[y_v]]))
+
+    fig, ax = plt.subplots()
+    ax.contour(xx, yy, z)
+    plt.show()
+
+
+
+
+
+# Initialization of problem
 swarm = Swarm(number_of_particles = 100)
 n_iterations = 500
 n_var = 2
@@ -133,4 +164,5 @@ it_vec = np.linspace(1,n_iterations + 1, n_iterations)
 plt.plot(it_vec, GBEST)
 plt.show()
 
-draw_landscape(upper_bounds, lower_bounds)
+#draw_landscape(objective_function, upper_bounds, lower_bounds)
+draw_particles(objective_function, upper_bounds, lower_bounds, swarm)
