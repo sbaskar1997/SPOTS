@@ -10,6 +10,7 @@ import sys
 import os
 import random
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 from mpl_toolkits import mplot3d
 
 # Append appropriate directories
@@ -47,6 +48,10 @@ def draw_landscape(landscape_function, upper_bounds, lower_bounds):
     ax.plot_surface(xx, yy, z)
     plt.show()
 
+def draw_particle(plot, particle):
+    plot.set_xdata(particle.X[0])
+    plot.set_ydata(particle.X[0])
+
 # Draw particle trajectories along 2D plot
 def draw_particles(landscape_function, upper_bounds, lower_bounds, swarm):
 
@@ -72,8 +77,14 @@ def draw_particles(landscape_function, upper_bounds, lower_bounds, swarm):
             z[x_v, y_v] = landscape_function(np.array([x[x_v], y[y_v]]))
 
     fig, ax = plt.subplots()
-    ax.contour(xx, yy, z)
-    plt.show()
+    plot = ax.contourf(xx, yy, z)
+
+    # Plot particles
+
+
+    # for particle in swarm.particles:
+    #     draw_particle(particle)
+    # plt.show()
 
 
 
@@ -86,6 +97,8 @@ n_var = 2
 upper_bounds = np.array([10, 10])
 lower_bounds = np.array([-10, -10])
 GBEST = np.zeros(n_iterations)
+particle_state_history = np.zeros(shape = (n_iterations, len(swarm.particles)))
+particle_velocity_history = np.zeros(shape = (n_iterations, len(swarm.particles)))
 
 # Change inertia weights until convergence
 w_max = 0.9
@@ -95,6 +108,7 @@ w = np.linspace(w_max, w_min, n_iterations)
 # Cognitive and social weights (c1 and c2 respectively)
 c1 = 2
 c2 = 2
+
 
 # Initialize particles
 for particle in range(0, len(swarm.particles)):
@@ -118,6 +132,7 @@ for it in range(0,n_iterations):
         current_state = swarm.particles[p].X
 
         current_state = (upper_bounds - lower_bounds) * rand(n_var) + lower_bounds
+        particle_state_history[it, p] = current_state
         swarm.particles[p].X = current_state
         current_objective_cost = objective_function(current_state)
 
@@ -152,6 +167,7 @@ for it in range(0,n_iterations):
 
         # Add all terms together
         V_next = inertia_term + cognitive_term + social_term
+        particle_velocity_history[it, p] = V_next
         X_next = swarm.particles[p].X + V_next
 
         # Update particle position and velocity
