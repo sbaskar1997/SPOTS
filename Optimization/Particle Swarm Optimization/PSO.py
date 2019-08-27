@@ -10,6 +10,7 @@ import sys
 import os
 import random
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 from mpl_toolkits import mplot3d
 
 # Append appropriate directories
@@ -21,40 +22,14 @@ from Swarm import Swarm
 from ObjectiveFunction import objective_function
 
 # Initialization of problem
-
-
-def draw_landscape(upper_bounds, lower_bounds):
-    if (len(upper_bounds) > 2):
-        print('Warning: More than two dimensions given for landscape,' +
-        'only plotting first two variables in search landscape')
-    upper_bound_x1 = upper_bounds[0]
-    upper_bound_x2 = upper_bounds[1]
-
-    lower_bound_x1 = lower_bounds[0]
-    lower_bound_x2 = lower_bounds[1]
-
-
-    x1 = np.linspace(lower_bound_x1, upper_bound_x1, 200)
-    x2 = np.linspace(lower_bound_x2, upper_bound_x2, 200)
-    xx, yy = np.meshgrid(x1, x2)
-
-    z = np.zeros(shape = (len(x1), len(x2)))
-
-    for x in range(0,len(x1)):
-        for y in range(0,len(x2)):
-            z[x,y] = objective_function(np.array([x1[x], x2[y]]))
-
-    fig = plt.figure()
-    ax = plt.axes(projection = '3d')
-    ax.plot_surface(xx, yy, z)
-    plt.show()
-
 swarm = Swarm(number_of_particles = 100)
 n_iterations = 500
 n_var = 2
 upper_bounds = np.array([10, 10])
 lower_bounds = np.array([-10, -10])
 GBEST = np.zeros(n_iterations)
+particle_state_history = np.zeros(shape = (n_iterations, len(swarm.particles)))
+particle_velocity_history = np.zeros(shape = (n_iterations, len(swarm.particles)))
 
 # Change inertia weights until convergence
 w_max = 0.9
@@ -64,6 +39,7 @@ w = np.linspace(w_max, w_min, n_iterations)
 # Cognitive and social weights (c1 and c2 respectively)
 c1 = 2
 c2 = 2
+
 
 # Initialize particles
 for particle in range(0, len(swarm.particles)):
@@ -87,6 +63,7 @@ for it in range(0,n_iterations):
         current_state = swarm.particles[p].X
 
         current_state = (upper_bounds - lower_bounds) * rand(n_var) + lower_bounds
+        particle_state_history[it, p] = current_state
         swarm.particles[p].X = current_state
         current_objective_cost = objective_function(current_state)
 
@@ -121,6 +98,7 @@ for it in range(0,n_iterations):
 
         # Add all terms together
         V_next = inertia_term + cognitive_term + social_term
+        particle_velocity_history[it, p] = V_next
         X_next = swarm.particles[p].X + V_next
 
         # Update particle position and velocity
@@ -133,4 +111,5 @@ it_vec = np.linspace(1,n_iterations + 1, n_iterations)
 plt.plot(it_vec, GBEST)
 plt.show()
 
-draw_landscape(upper_bounds, lower_bounds)
+#draw_landscape(objective_function, upper_bounds, lower_bounds)
+draw_particles(objective_function, upper_bounds, lower_bounds, swarm)
