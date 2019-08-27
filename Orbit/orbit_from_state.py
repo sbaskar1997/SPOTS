@@ -3,6 +3,7 @@
 # Author: Sandeep Baskar
 
 import numpy as np
+import math
 from Orbit import Orbit
 
 def orbit_from_state(pos, vel, center_body_mu = 398600):
@@ -55,8 +56,19 @@ def orbit_from_state(pos, vel, center_body_mu = 398600):
     # Argument of perigee
     AOP = np.arccos(np.dot(line_of_nodes_vec, ecc_vec)/(np.linalg.norm(line_of_nodes_vec) * ecc))
 
+
+    # Check for NaN values for orbital elements
     if (ecc_vec[2] < 0):
         AOP = 360 - AOP
+
+    if (math.isnan(AOP)):
+        AOP = 0
+
+    if (math.isnan(omega)):
+        omega = 0
+
+    if (math.isnan(inc)):
+        inc = 0
 
     # Generate orbit object
     orbit = Orbit(eccentricity = ecc, semiMajorAxis = a, inclination = inc, raan = omega, aop = AOP)

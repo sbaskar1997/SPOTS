@@ -27,18 +27,18 @@ def matmul(a,b):
 class Orbit:
     # Class constructor
     def __init__(self, eccentricity, semiMajorAxis, inclination, raan, aop):
-        self._eccentricity = eccentricity
-        self._semiMajorAxis = semiMajorAxis
-        self._inclination = inclination
-        self._raan = raan
-        self._aop = aop
+        self.eccentricity = eccentricity
+        self.semiMajorAxis = semiMajorAxis
+        self.inclination = inclination
+        self.raan = raan
+        self.aop = aop
 
 
     # Calculate semi-latus rectum
     @property
     def semiLatusRectum(self):
-        self._semiLatusRectum = self._semiMajorAxis * (1 - self._eccentricity**2)
-        return self._semiLatusRectum
+        self.semiLatusRectum = self.semiMajorAxis * (1 - self.eccentricity**2)
+        return self.semiLatusRectum
 
     # Calculate radial coordinates of spacecraft in orbit
     @property
@@ -46,15 +46,15 @@ class Orbit:
         P = self.semiLatusRectum
         self._r = np.zeros((360,))
         for thetaStar in range(360):
-            self._r[thetaStar] = P/(1 + self._eccentricity * np.cos(np.radians(thetaStar)))
+            self._r[thetaStar] = P/(1 + self.eccentricity * np.cos(np.radians(thetaStar)))
         return self._r
 
     # Calculate directional cosine matrix at a particular true anomaly relating
     # orbital and inertial frames
     def _dcm(self, thetaStar):
-        theta = thetaStar + self._aop
-        inc = self._inclination
-        omega = self._raan
+        theta = thetaStar + self.aop
+        inc = self.inclination
+        omega = self.raan
         C11 = c(omega) * c(theta) - s(omega) * c(inc) * s(theta)
         C12 = -c(omega) * s(theta) - s(omega) * c(inc) * c(theta)
         C13 = s(omega) * s(inc)
@@ -75,7 +75,7 @@ class Orbit:
         # Iterate through true anomaly to find (x,y,z) coordinates
         for _thetaStar in range(0,360):
             # Find coordinates in orbit fixed reference frame
-            _theta = _thetaStar + self._aop
+            _theta = _thetaStar + self.aop
             _rVectorOrbital = [_r_inertial[_thetaStar], _theta, 0]
 
             # Calculate DCM at each true anomaly
