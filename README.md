@@ -1,6 +1,6 @@
 # SPOTS
-## Sandeep's Physics, Orbits, and Trajectories Suite
-## If you have any questions. Feel free to contact me at baskar.sandeep@gmail.com
+### Sandeep's Physics, Orbits, and Trajectories Suite
+### If you have any questions. Feel free to contact me at baskar.sandeep@gmail.com
 
 ### Current capabilities:
 Orbit Visualization
