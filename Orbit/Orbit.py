@@ -37,8 +37,8 @@ class Orbit:
     # Calculate semi-latus rectum
     @property
     def semiLatusRectum(self):
-        self.semiLatusRectum = self.semiMajorAxis * (1 - self.eccentricity**2)
-        return self.semiLatusRectum
+        self._semiLatusRectum = self.semiMajorAxis * (1 - self.eccentricity**2)
+        return self._semiLatusRectum
 
     # Calculate radial coordinates of spacecraft in orbit
     @property
@@ -90,19 +90,22 @@ class Orbit:
     @property
     def x(self):
         _rVectorInertial = self._inertial_vec()
-        return _rVectorInertial[:,0]
+        self._x = _rVectorInertial[:,0]
+        return self._x
 
     # Get inertial y values
     @property
     def y(self):
         _rVectorInertial = self._inertial_vec()
-        return _rVectorInertial[:,1]
+        self._y = _rVectorInertial[:,1]
+        return self._y
 
     # Get inertial z values
     @property
     def z(self):
         _rVectorInertial = self._inertial_vec()
-        return _rVectorInertial[:,2]
+        self._z = _rVectorInertial[:,2]
+        return self._z
 
     # Static method to setup plot
     def plot(self):
