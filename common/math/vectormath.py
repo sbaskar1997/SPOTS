@@ -12,3 +12,8 @@ def rand(length):
 
 def zeros(length):
     return np.zeros(length)
+
+def nearly_equal(a,b,sig_fig=5):
+    return ( a==b or 
+             int(a*10**sig_fig) == int(b*10**sig_fig)
+           )
