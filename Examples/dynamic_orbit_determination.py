@@ -53,7 +53,7 @@ for i in range(1, len(r_vec_act - 1)):
     # Find Time of flight based off of nominal orbit
     E_0 = np.radians(E_array[i - 1])
     E_c = np.radians(E_array[i])
-    TOF = np.sqrt(reference_orbit.semiMajorAxis**3/mu) * (E_c - E_0 - reference_orbit.eccentricity * np.sin(E_c - E_0))
+    TOF = np.sqrt(reference_orbit.semiMajorAxis**3/mu) * (E_c - E_0 - reference_orbit.eccentricity * (np.sin(E_c) - np.sin(E_0)))
 
     # Use lambert solver and populate all deltas
     orbit_act = lambert_solver(r_1, r_2, TOF)
