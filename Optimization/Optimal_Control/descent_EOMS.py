@@ -40,7 +40,7 @@ def cosd(arg):
 def sind(arg):
     return np.sin(np.radians(arg))
 
-def EOM_descent(states, t, Thrust = 1000, m = 10000):
+def EOM_descent(states, t, Thrust, m):
     # Unpack states
     [x, y, vx, vy, lambda_1, lambda_2, lambda_3, lambda_4] = states
 
